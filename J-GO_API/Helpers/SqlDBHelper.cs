@@ -26,7 +26,7 @@ namespace J_GO_API.Helpers
             command.ExecuteNonQuery();
         }
 
-        public List<Dictionary<string, object>> ExecuteReader(string query)
+        public List<Dictionary<string, object>> ExecuteReader(string query, Dictionary<string, object> parameters)
         {
             var result = new List<Dictionary<string, object>>();
 
@@ -47,6 +47,11 @@ namespace J_GO_API.Helpers
             }
 
             return result;
+        }
+
+        internal IEnumerable<Dictionary<string, object>?> ExecuteReader(string query)
+        {
+            throw new NotImplementedException();
         }
     }
 }
