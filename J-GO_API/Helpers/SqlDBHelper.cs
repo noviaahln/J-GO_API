@@ -26,7 +26,11 @@ namespace J_GO_API.Helpers
             command.ExecuteNonQuery();
         }
 
+<<<<<<< HEAD
         public List<Dictionary<string, object>> ExecuteReader(string query, Dictionary<string, object> parameters)
+=======
+        public List<Dictionary<string, object>> ExecuteReader(string query)
+>>>>>>> 562387df4dd7ea37d539639cc76279e7003b1b6b
         {
             var result = new List<Dictionary<string, object>>();
 
@@ -48,10 +52,13 @@ namespace J_GO_API.Helpers
 
             return result;
         }
+<<<<<<< HEAD
 
         internal IEnumerable<Dictionary<string, object>?> ExecuteReader(string query)
         {
             throw new NotImplementedException();
         }
+=======
+>>>>>>> 562387df4dd7ea37d539639cc76279e7003b1b6b
     }
 }

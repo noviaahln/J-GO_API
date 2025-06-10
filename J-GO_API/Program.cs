@@ -1,5 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
+<<<<<<< HEAD
 // Tambahkan CORS di sini
 builder.Services.AddCors(options =>
 {
@@ -12,6 +13,10 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
+=======
+// Add services to the container.
+
+>>>>>>> 562387df4dd7ea37d539639cc76279e7003b1b6b
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -28,9 +33,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+<<<<<<< HEAD
 // Tambahkan ini supaya CORS aktif
 app.UseCors("AllowMyOrigin");
 
+=======
+>>>>>>> 562387df4dd7ea37d539639cc76279e7003b1b6b
 app.UseAuthorization();
 
 app.MapControllers();
