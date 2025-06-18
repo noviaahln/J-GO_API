@@ -31,14 +31,35 @@ namespace J_GO_API.Models
 
             return result;
         }
-
-        public Pengguna? GetById(int id)
+        public bool CreatePengguna(Pengguna pengguna)
         {
-            string query = "SELECT * FROM \"Pengguna\" WHERE id_pengguna = @id_pengguna";
+            string query = @"INSERT INTO ""Pengguna"" (nama_lengkap, email, kata_sandi, jenis_pengguna) 
+                             VALUES (@nama_lengkap, @email, @kata_sandi, @jenis_pengguna)";
+            var parameters = new Dictionary<string, object>
+            {
+                { "@nama_lengkap", pengguna.nama_lengkap },
+                { "@email", pengguna.email },
+                { "@kata_sandi", pengguna.kata_sandi },
+                { "@jenis_pengguna", pengguna.jenis_pengguna }
+            };
+            try
+            {
+                _dbHelper.ExecuteNonQuery(query, parameters);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public Pengguna? GetByEmail(string email)
+        {
+            string query = "SELECT * FROM \"Pengguna\" WHERE email = @email";
 
             var parameters = new Dictionary<string, object>
             {
-                { "@id_pengguna", id }
+                { "@email", email }
             };
 
             var data = _dbHelper.ExecuteReader(query, parameters);
@@ -50,6 +71,8 @@ namespace J_GO_API.Models
                 {
                     id_pengguna = Convert.ToInt32(row["id_pengguna"]),
                     nama_lengkap = Convert.ToString(row["nama_lengkap"]),
+                    email = Convert.ToString(row["email"]),
+                    kata_sandi = Convert.ToString(row["kata_sandi"]),
                     jenis_pengguna = Convert.ToString(row["jenis_pengguna"])
                 };
             }

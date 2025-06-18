@@ -1,91 +1,67 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
 using J_GO_API.Models;
-=======
-using J_GO_API.Helpers;
-using J_GO_API.Models;
-using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System.Threading.Tasks;
->>>>>>> 562387df4dd7ea37d539639cc76279e7003b1b6b
 
 namespace J_GO_API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-<<<<<<< HEAD
-    public class LacakDriverController : ControllerBase
+    public class LokasiController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private readonly LokasiContext _context;
 
-        public LacakDriverController(IConfiguration configuration)
+        public LokasiController(IConfiguration configuration)
         {
-            _configuration = configuration;
+            string connectionString = configuration.GetConnectionString("koneksi") ?? "";
+            _context = new LokasiContext(connectionString);
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Lokasi>> GetAll()
-        {
-            string connString = _configuration.GetConnectionString("koneksi");
-            LokasiContext context = new LokasiContext(connString);
-            return Ok(context.ListLokasi());
-        }
-
+        // CREATE (otomatis isi id_order dari driver)
         [HttpPost]
-        public ActionResult Create([FromBody] Lokasi loc)
+        public IActionResult CreateLokasi([FromBody] Lokasi lokasi)
         {
-            string connString = _configuration.GetConnectionString("koneksi");
-            LokasiContext context = new LokasiContext(connString);
-
-            bool result = context.CreateLokasi(loc);
-
-            if (result)
-                return Ok(new { message = "Data lokasi berhasil ditambahkan." });
-            else
-                return BadRequest(new { message = "Gagal menambahkan data lokasi." });
-=======
-    public class DriverLocationController : ControllerBase
-    {
-        private readonly SqlDBHelper _dbHelper;
-
-        public DriverLocationController(IConfiguration configuration)
-        {
-            string connectionString = configuration.GetConnectionString("koneksi");
-            _dbHelper = new SqlDBHelper(connectionString);
+            bool success = _context.CreateLokasi(lokasi);
+            if (success) return Ok(new { message = "Lokasi berhasil ditambahkan." });
+            return BadRequest(new { message = "Gagal menambahkan lokasi." });
         }
 
-        [HttpPost]
-        public IActionResult PostDriverLocation([FromBody] lokasi location)
+        // GET ALL BY ID ORDER
+        [HttpGet("by-order/{id_order}")]
+        public IActionResult GetLokasiByOrder(int id_order)
         {
-            if (location == null)
-            {
-                return BadRequest("Data lokasi tidak valid.");
-            }
+            var data = _context.GetLokasiByOrderId(id_order);
+            if (data == null || data.Count == 0)
+                return NotFound(new { message = "Tidak ada lokasi untuk order tersebut." });
 
-            string query = @"
-                INSERT INTO ""Lokasi"" 
-                (""id_driver"", ""waktu_update"", ""longitude"", ""latitude"") 
-                VALUES 
-                (@id_driver, @waktu_update, @longitude, @latitude)";
+            return Ok(data);
+        }
+        // GET ALL BY ID DRIVER
+        [HttpGet("by-driver/{id_driver}")]
+        public IActionResult GetLokasiByDriver(int id_driver)
+        {
+            var data = _context.GetLokasiByDriverId(id_driver);
+            if (data == null || data.Count == 0)
+                return NotFound(new { message = "Tidak ada lokasi untuk order tersebut." });
 
-            var parameters = new Dictionary<string, object>
-            {
-                { "@id_driver", location.id_driver },
-                { "@waktu_update", location.waktu_update },
-                { "@longitude", location.longitude },
-                { "@latitude", location.latitude }
-            };
+            return Ok(data);
+        }
 
-            try
-            {
-                _dbHelper.ExecuteNonQuery(query, parameters);
-                return Ok(new { message = "Lokasi berhasil disimpan." });
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(500, $"Terjadi kesalahan: {ex.Message}");
-            }
->>>>>>> 562387df4dd7ea37d539639cc76279e7003b1b6b
+        // UPDATE
+        [HttpPut("{id}")]
+        public IActionResult UpdateLokasi(int id, [FromBody] Lokasi lokasi)
+        {
+            lokasi.id_lokasi = id;
+            bool success = _context.UpdateLokasi(lokasi);
+            if (success) return Ok(new { message = "Lokasi berhasil diperbarui." });
+            return BadRequest(new { message = "Gagal memperbarui lokasi." });
+        }
+
+        // DELETE
+        [HttpDelete("{id}")]
+        public IActionResult DeleteLokasi(int id)
+        {
+            bool success = _context.DeleteLokasi(id);
+            if (success) return Ok(new { message = "Lokasi berhasil dihapus." });
+            return BadRequest(new { message = "Gagal menghapus lokasi." });
         }
     }
 }

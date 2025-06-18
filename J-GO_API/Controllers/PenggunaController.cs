@@ -23,12 +23,12 @@ namespace J_GO_API.Controllers
         }
 
         // Tambahan: GET api/pengguna/{id}
-        [HttpGet("{id}")]
-        public ActionResult<Pengguna> GetById(int id)
+        [HttpGet("{email}")]
+        public ActionResult<Pengguna> GetByEmail(string email)
         {
             string connString = _configuration.GetConnectionString("koneksi");
             PenggunaContext context = new PenggunaContext(connString);
-            var pengguna = context.GetById(id);
+            var pengguna = context.GetByEmail(email);
 
             if (pengguna == null)
             {
